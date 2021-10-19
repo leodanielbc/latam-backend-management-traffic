@@ -1,0 +1,29 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Types } from 'mongoose';
+import { Configuration } from './configuration.entity';
+
+
+
+const schemaOptions = {
+    timestamps: { createdAt: 'fechaCreacion', updatedAt: 'fechaActualizacion' }
+}
+
+@Schema(schemaOptions)
+export class Traffic extends Document {
+    @Prop({ required: true })
+    tipo: string;
+
+    @Prop({ required: true })
+    estado: string;
+
+    @Prop({ type: [Configuration], })
+    configuracion: Types.Array<Configuration>;
+
+    @Prop()
+    fechaCreacion: Date;
+
+    @Prop()
+    fechaActualizacion: Date;
+}
+
+export const TrafficSchema = SchemaFactory.createForClass(Traffic);
