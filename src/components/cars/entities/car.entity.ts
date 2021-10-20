@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
+import { User } from '../../users/entities/user.entity';
 
 
 
@@ -9,7 +10,7 @@ const schemaOptions = {
 
 @Schema(schemaOptions)
 export class Car extends Document {
-    @Prop({ required: true })
+    @Prop({ required: true, unique: true })
     placa: string;
 
     @Prop({ required: false })
@@ -18,14 +19,15 @@ export class Car extends Document {
     @Prop({ required: true })
     modelo: string;
 
-    @Prop({ required: true })
-    usuario: string;
+    @Prop({ type: Types.ObjectId, ref: User.name })
+    user: User | Types.ObjectId;
 
     @Prop()
     fechaCreacion: Date;
 
     @Prop()
     fechaActualizacion: Date;
+
 }
 
 export const CarSchema = SchemaFactory.createForClass(Car);

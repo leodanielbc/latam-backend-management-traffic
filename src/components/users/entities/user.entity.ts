@@ -10,7 +10,7 @@ const schemaOptions = {
 
 @Schema(schemaOptions)
 export class User extends Document {
-    @Prop({ required: true })
+    @Prop({ required: true, unique: true })
     dni: string;
 
     @Prop({ required: true })
@@ -19,14 +19,14 @@ export class User extends Document {
     @Prop({ required: true })
     apellido: string;
 
-    @Prop({ required: true })
-    usuario: string;
+    @Prop({ required: false })
+    email: string;
 
-    @Prop({ required: true })
+    @Prop({ required: false })
     password: string;
 
-    @Prop({ type: [Car], })
-    cars: Types.Array<Car>;
+    /* @Prop({ type: [{ type: Types.ObjectId, ref: Car.name }], required: false })
+    cars: Types.Array<Car>; */
 
     @Prop()
     fechaCreacion: Date;
