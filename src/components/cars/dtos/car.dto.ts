@@ -31,4 +31,4 @@ export class RegisterCarDto {
     user: UserDto;
 }
 
-export class UpdateUserDto extends PartialType(RegisterCarDto) { }
+export class UpdateCarDto extends PartialType(RegisterCarDto) { }

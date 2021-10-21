@@ -10,19 +10,16 @@ const schemaOptions = {
 @Schema(schemaOptions)
 export class Configuration extends Document {
     @Prop({ required: true })
-    placas: string;
+    placas: Array<number>;
 
     @Prop({ required: true })
-    estado: string;
-
-    @Prop({ required: true })
-    default: string;
-
-    @Prop({ required: true })
-    fechaInicio: Date;
+    tipo: string;
 
     @Prop({ required: false })
-    fechaFin: Date;
+    diaSemana: Array<number>;
+
+    @Prop({ required: false, default: 'ACTIVO'})
+    estado: string;
 
     @Prop()
     fechaCreacion: Date;

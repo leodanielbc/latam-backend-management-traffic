@@ -16,8 +16,17 @@ export class Traffic extends Document {
     @Prop({ required: true })
     estado: string;
 
-    @Prop({ type: [Configuration], })
-    configuracion: Types.Array<Configuration>;
+    @Prop({ required: true })
+    fechaInicio: Date;
+
+    @Prop({ required: false })
+    fechaFin: Date;
+
+    @Prop({ required: true, default: false })
+    default: string;
+
+    @Prop({ type: [{ type: Types.ObjectId, ref: Configuration.name }], })
+    configuration: Types.Array<Configuration>;
 
     @Prop()
     fechaCreacion: Date;
