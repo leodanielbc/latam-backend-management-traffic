@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { TrafficConsultDto, TrafficDto } from '../dtos/traffic.dto';
 import { Configuration } from '../entities/configuration.entity';
 import { Traffic } from '../entities/traffic.entity';
-import { format, getDate, compareAsc, getMonth, getYear } from 'date-fns';
+import { format, compareAsc, addDays } from 'date-fns';
 
 @Injectable()
 export class TrafficService {
@@ -23,7 +23,17 @@ export class TrafficService {
                 configuracionesId = [...configuracionesId, configurationSave._id]
             }
 
+
+            // set Date
+            const fechaInicio = new Date(dataTraffic.fechaInicio + 'T00:00:00.000Z');
+
+            const fechaFin = new Date(dataTraffic.fechaFin + 'T23:59:59.999Z');
+
+            if (fechaFin.getTime() < fechaInicio.getTime()) throw { codigoEstado: HttpStatus.EXPECTATION_FAILED, message: "La fecha esta incorrecta" };
+
             dataTraffic.configuration = configuracionesId;
+            dataTraffic.fechaInicio = fechaInicio;
+            dataTraffic.fechaFin = fechaFin;
 
             const traffic = await new this.trafficModel(dataTraffic).save();
 
@@ -38,20 +48,21 @@ export class TrafficService {
         try {
 
             const todayFormat = format(new Date(), 'yyyy-MM-dd');
-
             const today = new Date(todayFormat + 'T00:00:00.000Z');
-            today.setDate(today.getDate() + 1);
+
 
 
             const fechaParam = new Date(dataTrafficConsult.fecha + 'T00:00:00.000Z');
-            fechaParam.setDate(fechaParam.getDate() + 1);
 
-            const fechaParamFormat = format(fechaParam, ' dd MMMM yyyy');
+            const fechaParamFormat = format(addDays(fechaParam, 1), 'dd MMMM yyyy');
+            const dayParamFormat = Number(format(addDays(fechaParam, 1), 'dd'));
+
 
 
             // validar fecha sea mayor al dia actual
             const validarFecha = compareAsc(fechaParam, today);
-            if (validarFecha < 0) throw { codigoEstado: HttpStatus.EXPECTATION_FAILED, message: "La fecha esta incorrecta" };;
+
+            if (validarFecha < 0) throw { codigoEstado: HttpStatus.EXPECTATION_FAILED, message: "La fecha esta incorrecta" };
 
 
             const getTraffic = await this.trafficModel.find({ estado: 'activo' })
@@ -69,8 +80,7 @@ export class TrafficService {
             if (getTraffic.length === 1) {
                 const trafficDefault = getTraffic.find((element) => element.default === true);
 
-                const checkDia = fechaParam.getDate() % 2 === 0 ? "par" : "impar";
-                console.log("checkDiaDefault", fechaParam.getDate(), checkDia);
+                const checkDia = dayParamFormat % 2 === 0 ? "par" : "impar";
 
                 for (const configuration of trafficDefault.configuration) {
                     if (configuration.tipo === checkDia) {

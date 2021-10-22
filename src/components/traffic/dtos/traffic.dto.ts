@@ -17,13 +17,13 @@ export class TrafficDto {
     @IsDate()
     @IsNotEmpty()
     @ApiProperty({ description: "" })
-    readonly fechaInicio: Date;
+    fechaInicio: Date;
 
     @IsOptional()
     @IsDate()
     @IsNotEmpty()
     @ApiProperty({ description: "" })
-    readonly fechaFin: Date;
+    fechaFin: Date;
 
     @IsOptional()
     @IsBoolean()
@@ -47,7 +47,7 @@ export class TrafficConsultDto {
     @IsDate()
     @IsNotEmpty()
     @ApiProperty({ description: "" })
-    readonly fecha: Date;
+    readonly fecha: string;
 }
 
 export class UpdateTrafficDto extends PartialType(TrafficDto) { }
