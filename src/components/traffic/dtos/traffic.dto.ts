@@ -38,4 +38,16 @@ export class TrafficDto {
     configuration: Array<ConfigurationDto>;
 }
 
+export class TrafficConsultDto {
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({ description: "" })
+    readonly placa: string;
+
+    @IsDate()
+    @IsNotEmpty()
+    @ApiProperty({ description: "" })
+    readonly fecha: Date;
+}
+
 export class UpdateTrafficDto extends PartialType(TrafficDto) { }

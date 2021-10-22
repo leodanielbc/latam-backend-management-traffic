@@ -1,7 +1,7 @@
-import { Body, Controller, Post, Headers, HttpStatus } from '@nestjs/common';
+import { Body, Controller, Post, Headers, HttpStatus, Get, Query } from '@nestjs/common';
 import { ApiBody, ApiHeader, ApiOperation, ApiResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { ResponseServer } from '../../../shared/response-server';
-import { TrafficDto } from '../dtos/traffic.dto';
+import { TrafficConsultDto, TrafficDto } from '../dtos/traffic.dto';
 import { TrafficService } from '../services/traffic.service';
 
 @ApiTags('Traffic')
@@ -34,13 +34,51 @@ export class TrafficController {
             if (traffic) {
                 return this.responseServer.enviarRespuestaOptimizada({ codigoEstado: HttpStatus.OK, datos: traffic })
             } else {
-                return this.responseServer.enviarRespuestaOptimizada({ codigoEstado: HttpStatus.NOT_FOUND, mensaje: "Error al registrar los datos"  })
+                return this.responseServer.enviarRespuestaOptimizada({ codigoEstado: HttpStatus.EXPECTATION_FAILED, mensaje: "Error al registrar los datos" })
             }
         } catch (error) {
             return this.responseServer.enviarRespuestaOptimizada({
                 codigoEstado: HttpStatus.INTERNAL_SERVER_ERROR,
                 mensaje: error.message
             });
+        }
+
+    }
+
+    @Get('/')
+    @ApiSecurity('Authorization')
+    @ApiBody({ type: TrafficConsultDto })
+    @ApiHeader({ name: 'apiKey', description: 'key para usar las rutas', required: true })
+    @ApiOperation({ summary: 'consultar circulacion por placa y fecha' })
+    @ApiResponse({ status: 200, description: 'El vehiculo NO puede circular' })
+    @ApiResponse({ status: 404, description: 'No hay una configuracion' })
+    @ApiResponse({ status: 401, description: 'No autorizado' })
+    @ApiResponse({ status: 406, description: 'Parámetros no validos' })
+
+    async checkTraffic(
+        @Headers() headers,
+        @Query() dataTraffic: TrafficConsultDto
+    ) {
+
+        try {
+            const traffic: any = await this.trafficService.checkTraffic(dataTraffic);
+            if (traffic.circular) {
+                return this.responseServer.enviarRespuestaOptimizada({ codigoEstado: HttpStatus.OK, mensaje: traffic.message, datos: traffic.circular });
+            } else {
+                return this.responseServer.enviarRespuestaOptimizada({ codigoEstado: HttpStatus.OK, mensaje: traffic.message, datos: traffic.circular });
+            }
+        } catch (error) {
+            if (error.codigoEstado) {
+                return this.responseServer.enviarRespuestaOptimizada({
+                    codigoEstado: error.codigoEstado,
+                    mensaje: error.message
+                });
+            } else {
+                return this.responseServer.enviarRespuestaOptimizada({
+                    codigoEstado: HttpStatus.INTERNAL_SERVER_ERROR,
+                    mensaje: error.message
+                });
+            }
         }
 
     }

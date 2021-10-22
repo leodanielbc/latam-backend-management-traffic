@@ -23,7 +23,7 @@ export class Traffic extends Document {
     fechaFin: Date;
 
     @Prop({ required: true, default: false })
-    default: string;
+    default: boolean;
 
     @Prop({ type: [{ type: Types.ObjectId, ref: Configuration.name }], })
     configuration: Types.Array<Configuration>;
