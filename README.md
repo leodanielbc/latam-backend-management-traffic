@@ -24,7 +24,13 @@ $ npm run start:dev
 - Poner la URI de la base de datos
 ```
 
-## Stay in touch
+## Documentacion Api
+Para la documentacion de los endpoints ir al siguiente URL:
+```bash
+http://localhost:5100/docs
+```
 
-- Author - [Leonardo Benitez](https://www.linkedin.com/in/leodanielbc/)
+## Autor
+
+  [Leonardo Benitez](https://www.linkedin.com/in/leodanielbc/)
 

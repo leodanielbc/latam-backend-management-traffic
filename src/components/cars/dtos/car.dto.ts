@@ -31,4 +31,12 @@ export class RegisterCarDto {
     user: UserDto;
 }
 
+export class CarConsultDto {
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({ description: "" })
+    readonly placa: string;
+}
+
+
 export class UpdateCarDto extends PartialType(RegisterCarDto) { }

@@ -18,4 +18,14 @@ export class UserService {
             throw error;
         }
     }
+
+    async getUser(dni: string) {
+        try {
+            const user = await this.userModel.findOne({dni: dni});
+
+            return user ? user : null;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
